@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with arrayTypes; use arrayTypes;
+with reallocate; use reallocate;
 
 procedure lab2c is
    package Int_IO is new Ada.Text_IO.Integer_IO(Integer); use Int_IO;
@@ -10,12 +11,12 @@ procedure lab2c is
       top(stack) := top(stack) + 1;
       if top(stack) > base(stack + 1) then
          Put_Line("PUSH OVERFLOW");
-         reallocate.reallocate();
+         reallocate.reallocate(max, init, stack, 4, base, top, 0.15, space);
       else
          space(top(stack)) := text;
       end if;
 
-   end Insert;
+   end Push;
 
    procedure Pop(space : in out arrayTypes.stringArray; base : in out intArray; top : in out intArray; stack : in Integer; text : out charArray) is
    begin
@@ -49,11 +50,11 @@ begin
             temp(i) := text(i);
          end loop;
          if text(1) = 'I' then
-            Push(space, base, top, Integer'Value(text(2)), temp);
+            Push(space, base, top, Integer'Value(text(2..2)), temp);
          elsif text(1) = 'D' then
-            Pop(space, base, top, Integer'Value(text(2)), temp);
+            Pop(space, base, top, Integer'Value(text(2..2)), temp);
             New_Line;
-            for i in temp loop
+            for i in 1..10 loop
                Put(temp(i));
             end loop;
             New_Line;

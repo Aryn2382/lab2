@@ -46,8 +46,8 @@ begin
       end loop;
       Put("Enter text: "); Get(text);
       while text /= "end       " loop
-         for i in 4..12 loop
-            temp(i) := text(i);
+         for i in 4..13 loop
+            temp(i - 3) := text(i);
          end loop;
          if text(1) = 'I' then
             Push(space, base, top, Integer'Value(text(2..2)), temp);

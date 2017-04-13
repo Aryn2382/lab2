@@ -10,7 +10,7 @@ procedure lab2c is
    begin
       top(stack) := top(stack) + 1;
       if top(stack) > base(stack + 1) then
-         Put_Line("PUSH OVERFLOW");
+        Put_Line("PUSH OVERFLOW ");
          reallocate.reallocate(max, init, stack, 4, base, top, 0.15, space);
       else
          space(top(stack)) := text;
@@ -44,11 +44,13 @@ begin
          base(j) := Integer(Float'Floor(((Float(j) - 1.0) / 4.0 * Float(max - init)) + Float(init))) + 1;
          top(j) := base(j);
       end loop;
+      New_Line;
       Put("Enter text: "); Get(text);
-      while text /= "end       " loop
+      while text /= "end          " loop
          for i in 4..13 loop
             temp(i - 3) := text(i);
          end loop;
+         Put_Line(text);
          if text(1) = 'I' then
             Push(space, base, top, Integer'Value(text(2..2)), temp);
          elsif text(1) = 'D' then
@@ -59,6 +61,9 @@ begin
             end loop;
             New_Line;
          end if;
+         for i in 1..4 loop
+            Put(i); Put(": "); Put(base(i)); Put(" "); Put(top(i)); New_Line;
+         end loop;
          Put("Enter text: "); Get(text);
       end loop;
    end;

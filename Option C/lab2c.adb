@@ -10,12 +10,22 @@ procedure lab2c is
    begin
       top(stack) := top(stack) + 1;
       if top(stack) > base(stack + 1) then
-        Put_Line("PUSH OVERFLOW ");
-         reallocate.reallocate(max, init, stack, 4, base, top, 0.15, space);
+         Put_Line("PUSH OVERFLOW "); New_Line;
+         for i in (init + 1)..max loop
+            Put(i); Put(": ");
+            if (i >= top(1) and i < base(2)) or (i >= top(2) and i < base(3)) or (i >= top(3) and i < base(4)) or (i >= top(4)) then
+               New_Line;
+            else
+               for j in 1..space(i)'Length loop
+                  Put(space(i)(j));
+               end loop;
+               New_Line;
+            end if;
+         end loop;
+         reallocate.reallocate(max, init, stack, 4, base, top, 0.15, space, text);
       else
-         space(top(stack)) := text;
+         space(top(stack) - 1) := text;
       end if;
-
    end Push;
 
    procedure Pop(space : in out arrayTypes.stringArray; base : in out intArray; top : in out intArray; stack : in Integer; text : out charArray) is
@@ -23,7 +33,7 @@ procedure lab2c is
       if top(stack) = base(stack) then
          Put_Line("POP OVERFLOW");
       else
-         text := space(top(stack));
+         text := space(top(stack) - 1);
          top(stack) := top(stack) - 1;
       end if;
    end Pop;
@@ -61,9 +71,6 @@ begin
             end loop;
             New_Line;
          end if;
-         for i in 1..4 loop
-            Put(i); Put(": "); Put(base(i)); Put(" "); Put(top(i)); New_Line;
-         end loop;
          Put("Enter text: "); Get(text);
       end loop;
    end;

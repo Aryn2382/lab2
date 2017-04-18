@@ -5,7 +5,7 @@ package body reallocate is
    Avail, TotalInc, J, MinSpace : Integer;
    GrowthAllocate, Alpha, Beta, Sigma, Tau : Float;
 
-   procedure reallocate(max : in Integer; init : in Integer; stack: in Integer; stacks : in Integer; base : in out arrayTypes.intArray; top : in out arrayTypes.intArray; EqualAllocate : in Float; StackSpace: in out arrayTypes.stringArray) is
+   procedure reallocate(max : in Integer; init : in Integer; stack: in Integer; stacks : in Integer; base : in out arrayTypes.intArray; top : in out arrayTypes.intArray; EqualAllocate : in Float; StackSpace: in out arrayTypes.stringArray; text: in arrayTypes.charArray) is
       package Int_IO is new Ada.Text_IO.Integer_IO(Integer); use Int_IO;
       package Float_IO is new Ada.Text_IO.Float_IO(Float); use Float_IO;
    begin
@@ -15,51 +15,90 @@ package body reallocate is
          for i in 1..stacks loop
             OldTop(i) := Integer(Float'Floor(((Float(i) - 1.0) / 4.0 * Float(max - init)) + Float(init))) + 1;
          end loop;
+
+         Put("Base(J): ( ");
+         for i in 1..stacks loop
+            Put(Base(i), 1); Put(" ");
+         end loop;
+         Put(")"); New_Line;
+         Put("Top(J): ( ");
+         for i in 1..stacks loop
+            if i = stack then
+               Put(top(i) - 1, 1);
+            else
+               Put(top(i), 1);
+            end if;
+            Put(" ");
+         end loop;
+         Put(")"); New_Line;
+         Put("OldTop(J): ( ");
+         for i in 1..stacks loop
+            Put(OldTop(i), 1); Put(" ");
+         end loop;
+         Put(")"); New_Line; New_Line;
+
          Avail := max - init;
          TotalInc := 0;
          J := stacks;
-         MinSpace := Integer(Float'Floor(Float(max) * 0.1));
+         MinSpace := Integer(Float'Floor(Float(max) * 0.05));
          while J > 0 loop
-            --Put("J "); Put(J);
-            --Put(top(J)); Put(" "); Put(base(J)); New_Line;
             Avail := Avail - (top(J) - base(J));
             if top(J) > OldTop(J) then
                Growth(J) := top(J) - OldTop(J);
                TotalInc := TotalInc + Growth(J);
-               --Put("TotalInc "); Put(TotalInc);
             else
                Growth(J) := 0;
             end if;
             J := J - 1;
          end loop;
-         if TotalInc = 0 then
-            TotalInc := 1;
-         end if;
 
          if Avail < MinSpace - 1 then
-               Put_Line("MEMORY OVERLOAD");
+            Put_Line("MEMORY OVERLOAD");
+            top(stack) := top(stack) - 1;
          else
             GrowthAllocate := 1.0 - EqualAllocate;
             Alpha := EqualAllocate * Float(Avail) / Float(stacks);
-            --Put(TotalInc);
             Beta := GrowthAllocate * Float(Avail) / Float(TotalInc);
             NewBase(1) := Base(1);
             Sigma := 0.0;
             for i in 2..stacks loop
-               --Put(i); New_Line;
-               --Put(Beta); New_Line;
-               Tau := Sigma + Alpha + Float(Growth(i - 1)) * Beta;
-               --Put(Integer(Float'Floor(Tau))); New_Line;
+               Tau := Sigma + Alpha + (Float(Growth(i - 1)) * Beta);
                NewBase(i) := NewBase(i - 1) + (top(i - 1) - base(i - 1)) + Integer(Float'Floor(Tau)) - Integer(Float'Floor(Sigma));
                Sigma := Tau;
             end loop;
             top(stack) := top(stack) - 1;
             movestack.movestack(4, base, top, StackSpace, NewBase);
             top(stack) := top(stack) + 1;
-            --insert item?????
+            StackSpace(top(stack) - 1) := text;
             for i in 1..stacks loop
                OldTop(i) := top(i);
             end loop;
+
+            Put("After repacking:");
+            New_Line;
+            for i in (init + 1)..max loop
+               Put(i); Put(": ");
+               if (i >= top(1) and i < base(2)) or (i >= top(2) and i < base(3)) or (i >= top(3) and i < base(4)) or (i >= top(4)) then
+                  New_Line;
+               else
+                  for j in 1..StackSpace(i)'Length loop
+                     Put(StackSpace(i)(j));
+                  end loop;
+                  New_Line;
+               end if;
+            end loop;
+            New_Line;
+            Put("Base(J): ( ");
+            for i in 1..stacks loop
+               Put(Base(i), 1); Put(" ");
+            end loop;
+            Put(")"); New_Line;
+            Put("Top(J): ( ");
+            for i in 1..stacks loop
+               Put(top(i), 1); Put(" ");
+            end loop;
+            Put(")"); New_Line; New_Line;
+
          end if;
 
       end;

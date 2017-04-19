@@ -17,7 +17,7 @@ package body reallocate is
          end loop;
 
          Put("Base(J): ( ");
-         for i in 1..stacks loop
+         for i in 1..(stacks + 1) loop
             Put(Base(i), 1); Put(" ");
          end loop;
          Put(")"); New_Line;
@@ -69,7 +69,7 @@ package body reallocate is
             top(stack) := top(stack) - 1;
             movestack.movestack(4, base, top, StackSpace, NewBase);
             top(stack) := top(stack) + 1;
-            StackSpace(top(stack) - 1) := text;
+            StackSpace(top(stack)) := text;
             for i in 1..stacks loop
                OldTop(i) := top(i);
             end loop;
@@ -78,18 +78,18 @@ package body reallocate is
             New_Line;
             for i in (init + 1)..max loop
                Put(i); Put(": ");
-               if (i >= top(1) and i < base(2)) or (i >= top(2) and i < base(3)) or (i >= top(3) and i < base(4)) or (i >= top(4)) then
-                  New_Line;
-               else
+               if (i > base(1) and i <= top(1)) or (i > base(2) and i <= top(2)) or (i > base(3) and i <= top(3)) or (i > base(4) and i <= top(4)) then
                   for j in 1..StackSpace(i)'Length loop
                      Put(StackSpace(i)(j));
                   end loop;
+                  New_Line;
+               else
                   New_Line;
                end if;
             end loop;
             New_Line;
             Put("Base(J): ( ");
-            for i in 1..stacks loop
+            for i in 1..(stacks + 1) loop
                Put(Base(i), 1); Put(" ");
             end loop;
             Put(")"); New_Line;

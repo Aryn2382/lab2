@@ -11,20 +11,22 @@ procedure lab2c is
       top(stack) := top(stack) + 1;
       if top(stack) > base(stack + 1) then
          Put_Line("PUSH OVERFLOW "); New_Line;
+         top(stack) := top(stack) - 1;
          for i in (init + 1)..max loop
             Put(i); Put(": ");
-            if (i >= top(1) and i < base(2)) or (i >= top(2) and i < base(3)) or (i >= top(3) and i < base(4)) or (i >= top(4)) then
-               New_Line;
-            else
+            if (i > base(1) and i <= top(1)) or (i > base(2) and i <= top(2)) or (i > base(3) and i <= top(3)) or (i > base(4) and i <= top(4)) then
                for j in 1..space(i)'Length loop
                   Put(space(i)(j));
                end loop;
                New_Line;
+            else
+               New_Line;
             end if;
          end loop;
+         top(stack) := top(stack) + 1;
          reallocate.reallocate(max, init, stack, 4, base, top, 0.15, space, text);
       else
-         space(top(stack) - 1) := text;
+         space(top(stack)) := text;
       end if;
    end Push;
 
@@ -33,7 +35,7 @@ procedure lab2c is
       if top(stack) = base(stack) then
          Put_Line("POP OVERFLOW");
       else
-         text := space(top(stack) - 1);
+         text := space(top(stack));
          top(stack) := top(stack) - 1;
       end if;
    end Pop;
@@ -46,13 +48,15 @@ begin
    declare
       space : arrayTypes.stringArray(lower..upper);
       top : arrayTypes.intArray(1..4);
-      base : arrayTypes.intArray(1..4);
+      base : arrayTypes.intArray(1..5);
       text : String(1..13);
       temp : arrayTypes.charArray(1..10);
    begin
-      for j in 1..4 loop
-         base(j) := Integer(Float'Floor(((Float(j) - 1.0) / 4.0 * Float(max - init)) + Float(init))) + 1;
-         top(j) := base(j);
+      for j in 1..5 loop
+         base(j) := Integer(Float'Floor(((Float(j) - 1.0) / 4.0 * Float(max - init)) + Float(init)));
+         if j < 5 then
+            top(j) := base(j);
+         end if;
       end loop;
       New_Line;
       Put("Enter text: "); Get(text);

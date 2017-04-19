@@ -9,7 +9,6 @@ package body movestack is
          if NewBase(J) < Base(J) then
             Delt := Float(Base(J) - NewBase(J));
             for L in (Base(J) + 1)..Top(J) loop
-               Put("StackSpace("); Put((L - Integer(Delt)), 1); Put(") := "); Put("StackSpace("); Put(L, 1); Put(")"); New_Line;
                StackSpace(L - Integer(Delt)) := StackSpace(L);
             end loop;
             Base(J) := NewBase(J);
@@ -20,7 +19,6 @@ package body movestack is
          if NewBase(J) > Base(J) then
             Delt := Float(NewBase(J) - Base(J));
             for L in reverse (Base(J) + 1)..Top(J) loop
-               Put("StackSpace("); Put((L + Integer(Delt)), 1); Put(") := "); Put("StackSpace("); Put(L, 1); Put(")"); New_Line;
                StackSpace(L + Integer(Delt)) := StackSpace(L);
             end loop;
             Base(J) := NewBase(J);
